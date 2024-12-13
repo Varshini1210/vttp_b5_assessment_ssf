@@ -1,5 +1,11 @@
 package vttp.batch5.ssf.noticeboard.repositories;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Repository;
+
+@Repository
 public class NoticeRepository {
 
 	// TODO: Task 4
@@ -14,8 +20,19 @@ public class NoticeRepository {
 	 *
 	 *
 	 */
-	public void insertNotices() {
+	@Autowired
+	@Qualifier("notice")
+	RedisTemplate<String,Object> redisTemplate;
 
+	public void insertNotices(String id, String jsonString) {
+		// hset notice <id> <Json Payload>
+		redisTemplate.opsForHash().put("notice", id, jsonString);
+		
+	}
+
+	public Object getRandomKey(){
+		//hrandfield notice
+		return redisTemplate.opsForHash().randomKey("notice");
 	}
 
 
